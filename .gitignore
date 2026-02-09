@@ -1,0 +1,31 @@
+# Next.js
+/rag-frontend/.next/
+/rag-frontend/out/
+/rag-frontend/build/
+/rag-frontend/node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+/rag-backend/venv/
+/rag-backend/env/
+/rag-backend/.env
+/rag-backend/data/
+/rag-backend/chroma_db/
+
+# OS/IDEs
+.DS_Store
+.vscode/
+.idea/
+.gemini/
+/brain/
+
+# Application Logs/Temp
+*.log
+/rag-backend/temp/
+/rag-frontend/public/uploads/
+
+# Build artifacts
+dist/
+build/

@@ -1,0 +1,8 @@
+.env
+__pycache__/
+data/
+*.pdf
+.pytest_cache/
+.vscode/
+.idea/
+.DS_Store
