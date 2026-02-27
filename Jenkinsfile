@@ -53,7 +53,7 @@ pipeline {
                             ssh -o StrictHostKeyChecking=no ${VM_USER}@${STAGING_IP} '
                                 export TAG=${TAG}
                                 export DOCKER_USER=${DOCKER_USER}
-                                export GROK_API_KEY=\${GROK_API_KEY}
+                                export GROQ_API_KEY=\${GROQ_API_KEY}
                                 docker compose down -v
                                 docker compose pull
                                 docker compose up -d
@@ -98,7 +98,7 @@ pipeline {
                             ssh -o StrictHostKeyChecking=no ${VM_USER}@${PROD_IP} '
                                 export TAG=${TAG}
                                 export DOCKER_USER=${DOCKER_USER}
-                                export GROK_API_KEY=\${GROK_API_KEY}
+                                export GROQ_API_KEY=\${GROQ_API_KEY}
                                 docker compose down
                                 docker compose pull
                                 docker compose up -d
