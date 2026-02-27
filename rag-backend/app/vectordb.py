@@ -17,8 +17,13 @@ class VectorStore:
         self.db_path = db_path or settings.chroma_db_path
         self.collection_name = collection_name or settings.collection_name
         
+        from chromadb.config import Settings
+        
         # Configure persistence
-        self.client = chromadb.PersistentClient(path=self.db_path)
+        self.client = chromadb.PersistentClient(
+            path=self.db_path,
+            settings=Settings(allow_reset=True, anonymized_telemetry=False)
+        )
         
         # Initialize the embedding function (local and automatic)
         self.embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(

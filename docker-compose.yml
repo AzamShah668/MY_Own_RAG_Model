@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./rag-backend
+      dockerfile: Dockerfile
+    image: ${DOCKER_USER:-azamshah}/rag-backend:v${TAG:-latest}
+    container_name: rag-backend
+    ports:
+      - "8001:8001"
+    environment:
+      - GROK_API_KEY=${GROK_API_KEY}
+      - GROK_MODEL=${GROK_MODEL:-grok-2-latest}
+      - CHROMA_DB_PATH=/app/data/chroma_db
+      - COLLECTION_NAME=${COLLECTION_NAME:-rag_collection}
+    volumes:
+      - ./rag-backend/data:/app/data
+    networks:
+      - rag-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  frontend:
+    build:
+      context: ./rag-frontend
+      dockerfile: Dockerfile
+    image: ${DOCKER_USER:-azamshah}/rag-frontend:v${TAG:-latest}
+    container_name: rag-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8001
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - rag-network
+    restart: unless-stopped
+
+networks:
+  rag-network:
+    driver: bridge
+
+volumes:
+  rag-data:
+    driver: local

@@ -59,6 +59,25 @@
   .glass-dark {
     @apply bg-black/40 backdrop-blur-lg border border-white/5 shadow-2xl;
   }
+  
+  .markdown-container {
+    @apply space-y-4;
+  }
+  .markdown-container ul {
+    @apply list-disc list-inside space-y-2;
+  }
+  .markdown-container ol {
+    @apply list-decimal list-inside space-y-2;
+  }
+  .markdown-container b, .markdown-container strong {
+    @apply font-black text-primary;
+  }
+  .markdown-container h1, .markdown-container h2, .markdown-container h3 {
+    @apply font-black text-white mt-4 mb-2;
+  }
+  .markdown-container p {
+    @apply mb-4 last:mb-0;
+  }
 }
 
 :root {

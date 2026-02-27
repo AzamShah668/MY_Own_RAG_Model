@@ -5,6 +5,8 @@ import { Send, Bot, User, Sparkles, Loader2, Quote, Trash2 } from "lucide-react"
 import axios from "axios";
 import { cn } from "@/lib/utils";
 import { useChatStore } from "@/store/chatStore";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export default function ChatPage() {
     const { messages, addMessage, clearMessages, addInteraction } = useChatStore();
@@ -123,10 +125,18 @@ export default function ChatPage() {
                                 <div className={cn(
                                     "p-5 rounded-[2rem] text-[14px] leading-relaxed shadow-xl inline-block text-left max-w-[85%]",
                                     msg.role === 'assistant'
-                                        ? "glass-dark border border-white/5 text-foreground"
+                                        ? "glass-dark border border-white/5 text-foreground markdown-container"
                                         : "bg-primary text-white font-medium"
                                 )}>
-                                    {msg.content}
+                                    {msg.role === 'assistant' ? (
+                                        <ReactMarkdown
+                                            remarkPlugins={[remarkGfm]}
+                                        >
+                                            {msg.content}
+                                        </ReactMarkdown>
+                                    ) : (
+                                        msg.content
+                                    )}
                                 </div>
 
                                 {msg.context && msg.context.length > 0 && (

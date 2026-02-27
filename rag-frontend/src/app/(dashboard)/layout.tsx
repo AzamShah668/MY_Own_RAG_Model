@@ -12,17 +12,19 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, _hasHydrated } = useAuthStore();
   const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
-    // Simple client-side auth guard
+    // Wait for hydration before checking auth
+    if (!_hasHydrated) return;
+
     if (!isAuthenticated) {
       router.push("/login");
     } else {
       setIsChecking(false);
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, _hasHydrated, router]);
 
   if (isChecking) {
     return (

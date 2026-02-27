@@ -43,7 +43,17 @@ class LLMInterface:
         messages = [
             {
                 "role": "system", 
-                "content": "You are a professional assistant. Answer the user's question using ONLY the provided context. If the answer is not in the context, politely state that you cannot find the information."
+                "content": (
+                    "You are a professional intelligence assistant. Answer the user's question using ONLY the provided context. "
+                    "If the answer is not in the context, politely state that you cannot find the information.\n\n"
+                    "FORMATTING RULES:\n"
+                    "1. Use professional Markdown formatting.\n"
+                    "2. Use bold text for key terms and disease names.\n"
+                    "3. Use bullet points or numbered lists for summaries or multiple points.\n"
+                    "4. Use clear headings if the answer is long.\n"
+                    "5. Ensure there is proper spacing between paragraphs and list items for readability.\n"
+                    "6. Keep the tone clinical and precise."
+                )
             },
             {
                 "role": "user", 

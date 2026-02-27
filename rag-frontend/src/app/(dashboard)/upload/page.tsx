@@ -3,11 +3,13 @@
 import { useState, useCallback, useEffect } from "react";
 import { Upload, FileText, X, CheckCircle2, AlertCircle, Loader2, ArrowRight } from "lucide-react";
 import { useDropzone } from "react-dropzone";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import { cn } from "@/lib/utils";
 import { useChatStore } from "@/store/chatStore";
 
 export default function UploadPage() {
+    const router = useRouter();
     const { currentJob, setCurrentJob, updateJobStatus, addInteraction, _hasHydrated } = useChatStore();
     const [file, setFile] = useState<File | null>(null);
     const [localErrorMessage, setLocalErrorMessage] = useState("");
@@ -140,7 +142,7 @@ export default function UploadPage() {
                                     <button onClick={resetJob} className="text-xs font-bold px-6 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
                                         New Upload
                                     </button>
-                                    <button onClick={() => window.location.href = '/chat'} className="text-xs font-bold px-6 py-2.5 rounded-xl bg-primary text-white hover:bg-primary/90 transition-all">
+                                    <button onClick={() => router.push('/chat')} className="text-xs font-bold px-6 py-2.5 rounded-xl bg-primary text-white hover:bg-primary/90 transition-all">
                                         Enter Chat
                                     </button>
                                 </div>

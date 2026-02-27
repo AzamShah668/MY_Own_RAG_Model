@@ -8,6 +8,10 @@ class Settings(BaseSettings):
     chroma_db_path: str = "./data/chroma_db"
     collection_name: str = "rag_collection"
 
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=".env", 
+        extra="allow",
+        arbitrary_types_allowed=True
+    )
 
 settings = Settings()
