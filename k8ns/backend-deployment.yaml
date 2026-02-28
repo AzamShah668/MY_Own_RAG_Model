@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  namespace: rag-model
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: rag-backend:vlatest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8001
+        env:
+        - name: GROQ_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: rag-secrets
+              key: GROQ_API_KEY
+        - name: GROQ_MODEL
+          valueFrom:
+            configMapKeyRef:
+              name: rag-config
+              key: GROQ_MODEL
+        - name: COLLECTION_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: rag-config
+              key: COLLECTION_NAME
+        - name: CHROMA_DB_PATH
+          valueFrom:
+            configMapKeyRef:
+              name: rag-config
+              key: CHROMA_DB_PATH
+        - name: HF_HOME
+          value: /root/.cache/huggingface
+        volumeMounts:
+        - name: chroma-data
+          mountPath: /app/data
+        - name: model-cache
+          mountPath: /root/.cache
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 6
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8001
+          initialDelaySeconds: 60
+          periodSeconds: 20
+          timeoutSeconds: 10
+          failureThreshold: 10
+      volumes:
+      - name: chroma-data
+        persistentVolumeClaim:
+          claimName: chroma-pvc
+      - name: model-cache
+        persistentVolumeClaim:
+          claimName: model-cache-pvc

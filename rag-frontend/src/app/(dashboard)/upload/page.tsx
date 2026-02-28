@@ -23,7 +23,8 @@ export default function UploadPage() {
         if (currentJob?.id && currentJob.status === 'indexing') {
             timer = setInterval(async () => {
                 try {
-                    const res = await axios.get(`http://localhost:8001/job/${currentJob.id}`);
+                    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8001";
+                    const res = await axios.get(`${baseUrl}/job/${currentJob.id}`);
                     updateJobStatus(res.data.status);
 
                     if (res.data.status === 'completed') {
@@ -40,8 +41,13 @@ export default function UploadPage() {
                         setCurrentJob({ ...currentJob, status: 'error' });
                         setLocalErrorMessage(res.data.error || "Background processing failed");
                     }
-                } catch (e) {
+                } catch (e: any) {
                     console.error("Polling error", e);
+                    // If job is not found (pod restart), stop polling and show error
+                    if (e.response?.status === 404) {
+                        setCurrentJob({ ...currentJob, status: 'error' });
+                        setLocalErrorMessage("Processing state lost (Server Restarted). Please re-upload.");
+                    }
                 }
             }, 1500);
         }
@@ -74,7 +80,8 @@ export default function UploadPage() {
         formData.append("file", file);
 
         try {
-            const response = await axios.post("http://localhost:8001/upload_pdf", formData);
+            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8001";
+            const response = await axios.post(`${baseUrl}/upload_pdf`, formData);
             if (response.data.job_id) {
                 setCurrentJob({
                     id: response.data.job_id,
@@ -165,6 +172,14 @@ export default function UploadPage() {
                                 </div>
 
                                 <div className="flex items-center gap-4">
+                                    {(currentJob?.status === 'uploading' || currentJob?.status === 'indexing') && (
+                                        <button
+                                            onClick={resetJob}
+                                            className="text-[10px] font-bold text-red-400/60 hover:text-red-400 underline mr-2"
+                                        >
+                                            Force Reset
+                                        </button>
+                                    )}
                                     {!currentJob?.status && (
                                         <button onClick={() => setFile(null)} className="p-3 text-muted-foreground hover:bg-white/5 rounded-xl transition-colors">
                                             <X size={20} />

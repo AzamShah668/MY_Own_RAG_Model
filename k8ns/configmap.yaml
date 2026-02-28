@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rag-config
+  namespace: rag-model
+data:
+  GROQ_MODEL: llama-3.1-8b-instant
+  COLLECTION_NAME: rag_collection
+  NEXT_PUBLIC_API_URL: http://backend-service:8001
+  CHROMA_DB_PATH: /app/data/chroma_db
